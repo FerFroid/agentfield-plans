@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ferfroid.github.io/agentfield-plans/static-plan-v1.schema.json",
+  "title": "AgentField static runtime plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "version",
+    "id",
+    "revision",
+    "name",
+    "work_name",
+    "work_seconds",
+    "recovery_name",
+    "recovery_seconds"
+  ],
+  "properties": {
+    "schema": {"type": "integer", "const": 1},
+    "version": {"type": "integer", "const": 1},
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 24,
+      "pattern": "^[!-{}-~]+$"
+    },
+    "revision": {"type": "integer", "minimum": 1, "maximum": 2147483647},
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[!-{}-~](?:[ -{}-~]*[!-{}-~])?$"
+    },
+    "work_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 24,
+      "pattern": "^[!-{}-~](?:[ -{}-~]*[!-{}-~])?$"
+    },
+    "work_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+    "recovery_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 24,
+      "pattern": "^[!-{}-~](?:[ -{}-~]*[!-{}-~])?$"
+    },
+    "recovery_seconds": {"type": "integer", "minimum": 1, "maximum": 3600}
+  }
+}

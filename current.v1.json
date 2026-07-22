@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "version": 1,
+  "id": "agentfield-main",
+  "revision": 1,
+  "name": "AgentField 10/10",
+  "work_name": "ACELERA",
+  "work_seconds": 10,
+  "recovery_name": "RECUPERA",
+  "recovery_seconds": 10
+}
