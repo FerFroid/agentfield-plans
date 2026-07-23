@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "connectiq-runtime-plan-v1.schema.json",
+  "title": "AgentField Connect IQ runtime plan v1",
+  "description": "Closed, flat and bounded transport profile produced from canonical AgentField IR. The 24576-byte serialized limit is enforced by the adapter.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "profile", "id", "revision", "name", "stepCount", "steps"],
+  "properties": {
+    "schema": { "const": 1 },
+    "profile": { "const": "connectiq-runtime-v1" },
+    "id": { "$ref": "#/$defs/id" },
+    "revision": { "$ref": "#/$defs/positiveInt32" },
+    "name": { "$ref": "#/$defs/planName" },
+    "stepCount": { "type": "integer", "minimum": 1, "maximum": 32 },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": { "$ref": "#/$defs/step" }
+    }
+  },
+  "$defs": {
+    "positiveInt32": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*(?![\\s\\S])"
+    },
+    "portableText": {
+      "type": "string",
+      "pattern": "^(?!.*\\|)(?! )[ -~]*[!-~](?![\\s\\S])"
+    },
+    "planName": {
+      "allOf": [
+        { "$ref": "#/$defs/portableText" },
+        { "minLength": 1, "maxLength": 64 }
+      ]
+    },
+    "stepName": {
+      "allOf": [
+        { "$ref": "#/$defs/portableText" },
+        { "minLength": 1, "maxLength": 64 }
+      ]
+    },
+    "instruction": {
+      "allOf": [
+        { "$ref": "#/$defs/portableText" },
+        { "minLength": 1, "maxLength": 512 }
+      ]
+    },
+    "stepKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_~/-]*(?![\\s\\S])"
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "name", "role", "end", "target"],
+      "properties": {
+        "key": { "$ref": "#/$defs/stepKey" },
+        "name": { "$ref": "#/$defs/stepName" },
+        "role": { "enum": ["warmup", "work", "recovery", "cooldown"] },
+        "end": { "$ref": "#/$defs/end" },
+        "target": { "$ref": "#/$defs/target" },
+        "instruction": { "$ref": "#/$defs/instruction" }
+      }
+    },
+    "end": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "seconds"],
+          "properties": {
+            "type": { "const": "time" },
+            "seconds": { "$ref": "#/$defs/positiveInt32" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "meters"],
+          "properties": {
+            "type": { "const": "distance" },
+            "meters": { "$ref": "#/$defs/positiveInt32" }
+          }
+        }
+      ]
+    },
+    "target": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": { "type": { "const": "none" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "fastSecPerKm", "slowSecPerKm"],
+          "properties": {
+            "type": { "const": "pace" },
+            "fastSecPerKm": { "$ref": "#/$defs/positiveInt32" },
+            "slowSecPerKm": { "$ref": "#/$defs/positiveInt32" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "min", "max"],
+          "properties": {
+            "type": { "const": "hr" },
+            "min": { "$ref": "#/$defs/positiveInt32" },
+            "max": { "$ref": "#/$defs/positiveInt32" }
+          }
+        }
+      ]
+    }
+  }
+}
